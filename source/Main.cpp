@@ -21,21 +21,35 @@
 int mode = MODE_EXIT;
 Debug *debug;
 
-void _gfxInit() {
-    gfxInitDefault();
-    consoleInit(GFX_TOP, NULL);
+extern "C" {
+	Result svchax_init(void);
 }
 
-void appExit() {
-    amExit();
-    cfguExit();
-    Utility::sdmcArchiveExit();
-    fsExit();
-    gfxExit();
-    hidExit();
-    aptExit();
-    srvExit();
-    delete debug;
+extern "C"
+{
+	void __appInit()
+	{
+		// Initialize services
+		srvInit();
+		aptInit();
+		gfxInit(GSP_RGB565_OES, GSP_RGB565_OES, false);
+		hidInit();
+		fsInit();
+		sdmcArchiveInit();
+		amInit();
+	}
+
+	void __appExit()
+	{
+		// Exit services
+		amExit();
+		sdmcArchiveExit();
+		fsExit();
+		hidExit();
+		gfxExit();
+		aptExit();
+		srvExit();
+	}
 }
 
 int quit() {
